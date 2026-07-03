@@ -1,0 +1,38 @@
+<div class="mx-auto mt-12 w-full max-w-md">
+  @if (store.user(); as user) {
+    <div class="rounded-xl border border-gray-200 bg-white p-8 text-center shadow-sm">
+      <img
+        [src]="user.image"
+        [alt]="user.username"
+        class="mx-auto mb-4 h-24 w-24 rounded-full border border-gray-200 bg-gray-50"
+      />
+      <h1 class="text-2xl font-bold text-gray-900">{{ user.firstName }} {{ user.lastName }}</h1>
+      <p class="text-sm text-gray-500">&#64;{{ user.username }}</p>
+
+      <dl class="mt-6 space-y-2 text-left text-sm">
+        <div class="flex justify-between border-b border-gray-100 pb-2">
+          <dt class="text-gray-500">Email</dt>
+          <dd class="font-medium text-gray-900">{{ user.email }}</dd>
+        </div>
+        <div class="flex justify-between border-b border-gray-100 pb-2">
+          <dt class="text-gray-500">Género</dt>
+          <dd class="font-medium text-gray-900">{{ user.gender }}</dd>
+        </div>
+      </dl>
+
+      <button
+        type="button"
+        (click)="store.logout()"
+        class="mt-8 w-full rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 transition hover:bg-red-100"
+      >
+        Cerrar sesión
+      </button>
+    </div>
+  } @else if (store.loading()) {
+    <div class="flex justify-center py-16">
+      <app-spinner class="h-8 w-8 text-indigo-600" />
+    </div>
+  } @else {
+    <p class="py-16 text-center text-sm text-gray-500">No hay sesión activa.</p>
+  }
+</div>

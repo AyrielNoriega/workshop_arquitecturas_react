@@ -1,16 +1,9 @@
-import { useState, type FormEvent } from "react";
 import { Alert, Box, Button, Stack, TextField } from "@mui/material";
 import { useLogin } from "../hooks/useLogin";
 
 export function LoginForm() {
-  const login = useLogin();
-  const [username, setUsername] = useState("emilys");
-  const [password, setPassword] = useState("emilyspass");
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    login.mutate({ username, password });
-  };
+  const { login, username, setUsername, password, setPassword, handleSubmit } =
+    useLogin();
 
   return (
     <Box component="form" onSubmit={handleSubmit} noValidate>

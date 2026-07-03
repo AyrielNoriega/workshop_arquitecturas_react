@@ -1,0 +1,84 @@
+<div class="mx-auto max-w-6xl">
+  <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <h1 class="text-2xl font-bold text-gray-900">Productos</h1>
+
+    <div class="flex flex-col gap-2 sm:flex-row">
+      <input
+        type="search"
+        placeholder="Buscar productos…"
+        aria-label="Buscar productos"
+        [value]="store.query().q ?? ''"
+        (input)="onSearchInput($any($event.target).value)"
+        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 sm:w-64"
+      />
+
+      <select
+        aria-label="Filtrar por categoría"
+        [value]="store.query().category ?? ''"
+        (change)="onCategoryChange($any($event.target).value)"
+        class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 sm:w-56"
+      >
+        <option value="">Todas las categorías</option>
+        @for (category of store.categories(); track category.slug) {
+          <option [value]="category.slug">{{ category.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  @if (store.error(); as error) {
+    <p role="alert" class="mb-4 rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+      {{ error }}
+    </p>
+  }
+
+  @if (store.loading()) {
+    <div class="flex justify-center py-20">
+      <app-spinner class="h-8 w-8 text-indigo-600" />
+    </div>
+  } @else if (store.products().length === 0) {
+    <p class="py-20 text-center text-sm text-gray-500">
+      No se encontraron productos para esta búsqueda.
+    </p>
+  } @else {
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      @for (product of store.products(); track product.id) {
+        <a
+          [routerLink]="[product.id]"
+          class="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:shadow-md"
+        >
+          <div class="aspect-square overflow-hidden bg-gray-50">
+            <img
+              [src]="product.thumbnail"
+              [alt]="product.title"
+              loading="lazy"
+              class="h-full w-full object-cover transition group-hover:scale-105"
+            />
+          </div>
+          <div class="flex flex-1 flex-col p-4">
+            <p class="text-xs uppercase tracking-wide text-gray-400">{{ product.category }}</p>
+            <h2 class="mt-1 line-clamp-2 text-sm font-semibold text-gray-900">
+              {{ product.title }}
+            </h2>
+            <div class="mt-auto flex items-center justify-between pt-3">
+              <span class="text-lg font-bold text-indigo-600">
+                {{ product.price | currency: 'USD' }}
+              </span>
+              <span class="text-xs text-amber-600">★ {{ product.rating }}</span>
+            </div>
+          </div>
+        </a>
+      }
+    </div>
+
+    <app-pagination
+      class="mt-8 block"
+      [page]="store.page()"
+      [totalPages]="store.totalPages()"
+      [hasPrev]="store.hasPrev()"
+      [hasNext]="store.hasNext()"
+      (prev)="store.prevPage()"
+      (next)="store.nextPage()"
+    />
+  }
+</div>
